@@ -26,3 +26,11 @@ pytest_wifi_station.py
 sdkconfig.ci
 sdkconfig.ci.*
 sdkconfig.defaults
+app-flash_args
+bootloader-flash_args
+dependencies.lock
+flash_app_args
+flash_args
+flash_args.in
+flash_bootloader_args
+flash_project_args
