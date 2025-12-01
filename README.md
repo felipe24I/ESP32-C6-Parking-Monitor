@@ -97,7 +97,7 @@ Este archivo `.pem` será necesario si se va a acceder a la instancia EC2 como c
 
 ### 1.5 Inicio de la instancia
 
-### 1.5 Inicio de la instancia
+**1.5 Inicio de la instancia**
 
 Finalmente, después de revisar la configuración anterior, se hace clic en **“Launch instance”** para crear la máquina virtual.  
 
@@ -110,6 +110,32 @@ Desde el panel de EC2 se verifica que el estado de la instancia cambie a **“ru
 <img width="1919" height="500" alt="image" src="https://github.com/user-attachments/assets/40e76b7d-0bcd-4df7-8daa-f9421dff43d0" />
 
 Una vez la instancia está en ejecución, ya es posible acceder por **SSH** al servidor y continuar con la configuración del **broker MQTT (Mosquitto)** dentro de esta máquina virtual.
+
+## 2. Configuración del broker MQTT dentro del servidor AWS (EC2)
+
+**2.1 Acceso por SSH a la instancia EC2**
+
+Desde **Windows**, abre **PowerShell** en la carpeta donde guardaste el archivo `.pem` del key pair. 
+
+![ssh connect](./img/12.png)
+
+Una vez la instancia está en estado **“running”**, en el panel de EC2 se hace clic en el botón **“Connect”**.  
+En la ventana que se abre, se selecciona la opción **“SSH client”** y, en la parte inferior, en la sección **“Example”**, aparece el comando completo para conectarse por SSH a la instancia. Es un comando similar a:
+
+```bash
+ssh -i "NOMBRE_DE_TU_CLAVE.pem" ubuntu@IP_PUBLICA_DE_LA_INSTANCIA
+
+![ip-public](./img/13.png)
+
+![ip-public](./img/14.png)
+
+Este comando se debe copiar y ejecutar en Windows PowerShell, ubicándose primero en la carpeta donde se encuentra el archivo .pem.
+
+![ip-public](./img/15.png)
+
+De esta forma, se establece la conexión SSH con el servidor Ubuntu que está corriendo en la instancia EC2.
+
+![ip-public](./img/16.png)
 
 
 
