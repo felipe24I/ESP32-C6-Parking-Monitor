@@ -32,4 +32,4 @@ A partir de esa base se realizaron cambios en la lógica, en el manejo de MQTT y
 
 ![parking_monitor (1)](https://github.com/user-attachments/assets/6fdcd2c3-3698-43f9-84f4-914eb9c77f51)
 
-En la aruitectura IoT, el ESP32-C6 actúa como cliente MQTT conectado por WiFi al router, el cual da acceso a un servidor AWS EC2 que aloja el broker Mosquitto y el servidor web Apache2. El dashboard web se sirve vía HTTP y se comunica en tiempo real con el broker mediante MQTT sobre WebSocket
+En la arquitectura IoT, el ESP32-C6 actúa como cliente MQTT conectado por WiFi al router, el cual da acceso a un servidor AWS EC2 que aloja el broker Mosquitto y el servidor web Apache2. El dashboard web se sirve vía HTTP y se comunica en tiempo real con el broker mediante MQTT sobre WebSocket
