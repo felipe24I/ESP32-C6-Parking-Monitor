@@ -79,3 +79,20 @@ En ambos casos se puede dejar el origen como `0.0.0.0/0` para permitir el acceso
 
 ![Grupo de seguridad 3](./img/6.png)
 
+**1.4 Configuración del par de claves (Key pair)**
+
+En el apartado **“Key pair (login)”** se debe crear o seleccionar un **par de claves (key pair)**.  
+Un key pair es un mecanismo de autenticación que utiliza una **clave pública** (que queda almacenada en la instancia EC2) y una **clave privada** (que se descarga en tu computador) para permitir el acceso seguro por SSH, sin necesidad de usar una contraseña.
+
+Al crear un nuevo key pair, AWS generará un archivo con extensión **`.pem`**, el cual se descargará automaticamente y se debe guardar en un lugar seguro.  
+Este archivo `.pem` será necesario si se va a acceder a la instancia EC2 como cliente **SSH** desde **Windows PowerShell** (o desde cualquier otro cliente SSH).
+
+![Key-par 1](./img/7.png)
+
+ ![Key-par 2](./img/8.png)
+
+ ![Key-par 3](./img/10.png)
+
+
+
+
