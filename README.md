@@ -61,10 +61,21 @@ Como **Amazon Machine Image (AMI)** se selecciona **Ubuntu Server 22.04 LTS**, y
 En **Network settings**, selecciona la opción **“Create security group”** y configura las siguientes reglas de entrada:
 
 - **SSH** desde `0.0.0.0/0`: permite conectarse por SSH a la instancia desde cualquier dirección IP.  
-  > `0.0.0.0/0` significa “desde cualquier lugar en Internet”.
 
 - **HTTP** desde Internet: permite acceder al servidor web por el puerto 80.
 
 - **HTTPS** desde Internet: permite acceder por el puerto 443 (si se desea acceder al servidor web por este puerto).
 
 ![Grupo de seguridad 1](./img/4.png)
+
+A continuación, haz clic en **“Add security group rule”** para agregar los puertos necesarios para MQTT:
+
+- **Puerto 1883 (TCP)**: se utiliza para la conexión MQTT del **ESP32-C6** hacia el broker Mosquitto.
+- **Puerto 9001 (TCP)**: se utiliza para la conexión del **dashboard web** mediante **MQTT sobre WebSocket**.
+
+En ambos casos se puede dejar el origen como `0.0.0.0/0` para permitir el acceso desde cualquier IP
+
+![Grupo de seguridad 2](./img/5.png)
+
+![Grupo de seguridad 3](./img/6.png)
+
