@@ -97,13 +97,21 @@ Este archivo `.pem` será necesario si se va a acceder a la instancia EC2 como c
 
 ### 1.5 Inicio de la instancia
 
-Finalmente, después de revisar la configuración anterior, se procede a **iniciar la instancia EC2**.  
+### 1.5 Inicio de la instancia
 
-Desde el panel de EC2 se verifica que el estado de la instancia cambie a **“running”**, lo que indica que el servidor está encendido y listo para aceptar conexiones.
-
-Una vez la instancia está en ejecución, ya es posible acceder por **SSH** al servidor y continuar con la configuración del **broker MQTT (Mosquitto)** dentro de esta máquina virtual.
+Finalmente, después de revisar la configuración anterior, se hace clic en **“Launch instance”** para crear la máquina virtual.  
 
 ![Launch instance 1](./img/9.png)
 
-![Launch instance 2](./img/11.png)
+Luego, en la sección “Instances”, se selecciona (se marca) la instancia creada y, si es necesario, se elige la opción **“Instance state” → “Start instance”** para asegurarse de que esté encendida
+
+Desde el panel de EC2 se verifica que el estado de la instancia cambie a **“running”**, lo que indica que el servidor está encendido y listo para aceptar conexiones.
+
+<img width="1919" height="500" alt="image" src="https://github.com/user-attachments/assets/40e76b7d-0bcd-4df7-8daa-f9421dff43d0" />
+
+Una vez la instancia está en ejecución, ya es posible acceder por **SSH** al servidor y continuar con la configuración del **broker MQTT (Mosquitto)** dentro de esta máquina virtual.
+
+
+
+
 
