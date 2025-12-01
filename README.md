@@ -44,4 +44,4 @@ Primero, ingresa a **Amazon Web Services (AWS)** y crea una cuenta (puede ser co
 Luego accede a la **AWS Management Console** y, en la barra de búsqueda, escribe **“EC2 (Amazon Elastic Compute Cloud)”**. Dentro del servicio EC2 selecciona la opción **“Launch instance”** para crear una nueva instancia.
 
 ![AWS EC2 Instance](./img/1.png)
-
+![Lanzar instancia](./img/2.png)
