@@ -41,6 +41,7 @@ En la arquitectura IoT, el ESP32-C6 actúa como cliente MQTT conectado por WiFi 
 **1.1 Ingreso y creación de la instancia EC2 en AWS**
 
 Primero, ingresa a **Amazon Web Services (AWS)** y crea una cuenta (puede ser con la capa gratuita).  
-Luego accede a la **AWS Management Console** y, en la barra de búsqueda, escribe **“EC2 (Amazon Elastic Compute Cloud)”**.  
-Dentro del servicio EC2 selecciona la opción **“Launch instance”** para crear una nueva instancia.
+Luego accede a la **AWS Management Console** y, en la barra de búsqueda, escribe **“EC2 (Amazon Elastic Compute Cloud)”**. Dentro del servicio EC2 selecciona la opción **“Launch instance”** para crear una nueva instancia.
+
+![AWS EC2 Instance](./img/1.png)
 
