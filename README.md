@@ -19,3 +19,16 @@ En este proyecto los sensores de parqueo no son físicos, sino que se simulan en
 Este trabajo es una adaptación del proyecto original **“Proyecto IoT: ESP32 LED RGB con MQTT y Servidor Web”** de los autores **Edward Fabian Goyeneche Velandia** y **Juan Sebastian Giraldo Duque**, que se encuentra en https://github.com/Edward1304/Demo_IoT_MQTT_SERVER. 
 
 A partir de esa base se realizaron cambios en la lógica, en el manejo de MQTT y en la interfaz web para orientarlo al monitoreo de parqueaderos con ESP32-C6 y sensores simulados.
+
+## Componentes de la práctica
+
+- **ESP32-C6-DevKitC-1 v1.2** con LED RGB WS2812 integrado
+- **Servidor AWS EC2** con Ubuntu
+- **Broker MQTT Mosquitto** con soporte WebSocket
+- **Servidor Web Apache** 
+- **Página Web** con visualización en tiempo real
+
+##  Arquitectura IoT
+
+![parking_monitor (1)](https://github.com/user-attachments/assets/6fdcd2c3-3698-43f9-84f4-914eb9c77f51)
+
