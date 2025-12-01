@@ -47,3 +47,7 @@ Luego accede a la **AWS Management Console** y, en la barra de búsqueda, escrib
 Dentro del servicio EC2 selecciona la opción **“Launch instance”** para crear una nueva instancia.
 
 ![Lanzar instancia](./img/2.png)
+Al crear la instancia, se le puede asignar un nombre descriptivo, por ejemplo **esp-webserver**.  
+Como **Amazon Machine Image (AMI)** se selecciona **Ubuntu Server 22.04 LTS**, y como **Instance Type** se elige **t3.micro**, que es compatible con la capa gratuita de AWS y suficiente para alojar el broker MQTT (Mosquitto) y el servidor web (Apache2) de esta práctica.
+
+![Nombre server](./img/3.png)
