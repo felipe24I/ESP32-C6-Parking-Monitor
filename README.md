@@ -124,6 +124,7 @@ En la ventana que se abre, se selecciona la opción **“SSH client”** y, en l
 
 ```bash
 ssh -i "NOMBRE_DE_TU_CLAVE.pem" ubuntu@IP_PUBLICA_DE_LA_INSTANCIA
+```
 
 ![ip-public](./img/13.png)
 
