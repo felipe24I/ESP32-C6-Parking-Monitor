@@ -81,10 +81,12 @@ En ambos casos se puede dejar el origen como `0.0.0.0/0` para permitir el acceso
 
 **1.4 Configuración del par de claves (Key pair)**
 
-En el apartado **“Key pair (login)”** se debe crear o seleccionar un **par de claves (key pair)**.  
+En el apartado **“Key pair (login)”** se debe crear o seleccionar un **par de claves (key pair)**. 
+
 Un key pair es un mecanismo de autenticación que utiliza una **clave pública** (que queda almacenada en la instancia EC2) y una **clave privada** (que se descarga en tu computador) para permitir el acceso seguro por SSH, sin necesidad de usar una contraseña.
 
 Al crear un nuevo key pair, AWS generará un archivo con extensión **`.pem`**, el cual se descargará automaticamente y se debe guardar en un lugar seguro.  
+
 Este archivo `.pem` será necesario si se va a acceder a la instancia EC2 como cliente **SSH** desde **Windows PowerShell** (o desde cualquier otro cliente SSH).
 
 ![Key-par 1](./img/7.png)
@@ -93,6 +95,15 @@ Este archivo `.pem` será necesario si se va a acceder a la instancia EC2 como c
 
  ![Key-par 3](./img/10.png)
 
+### 1.5 Inicio de la instancia
 
+Finalmente, después de revisar la configuración anterior, se procede a **iniciar la instancia EC2**.  
 
+Desde el panel de EC2 se verifica que el estado de la instancia cambie a **“running”**, lo que indica que el servidor está encendido y listo para aceptar conexiones.
+
+Una vez la instancia está en ejecución, ya es posible acceder por **SSH** al servidor y continuar con la configuración del **broker MQTT (Mosquitto)** dentro de esta máquina virtual.
+
+![Launch instance 1](./img/9.png)
+
+![Launch instance 2](./img/11.png)
 
