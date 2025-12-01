@@ -38,16 +38,33 @@ En la arquitectura IoT, el ESP32-C6 actúa como cliente MQTT conectado por WiFi 
 
 ### 1. Creación y configuración del servidor EC2 en AWS
 
-**1.1 Ingreso y creación de la instancia EC2 en AWS**
+**1.1 Creación de la cuenta y acceso a EC2**
 
 Primero, ingresa a **Amazon Web Services (AWS)** y crea una cuenta (puede ser con la capa gratuita).  
 Luego accede a la **AWS Management Console** y, en la barra de búsqueda, escribe **“EC2 (Amazon Elastic Compute Cloud)”**. 
 
 ![AWS EC2 Instance](./img/1.png)
+
 Dentro del servicio EC2 selecciona la opción **“Launch instance”** para crear una nueva instancia.
 
 ![Lanzar instancia](./img/2.png)
+
+**1.2 Configuración de la instancia EC2**
+
 Al crear la instancia, se le puede asignar un nombre descriptivo, por ejemplo **esp-webserver**.  
 Como **Amazon Machine Image (AMI)** se selecciona **Ubuntu Server 22.04 LTS**, y como **Instance Type** se elige **t3.micro**, que es compatible con la capa gratuita de AWS y suficiente para alojar el broker MQTT (Mosquitto) y el servidor web (Apache2) de esta práctica.
 
 ![Nombre server](./img/3.png)
+
+**1.3 Configuración del grupo de seguridad (Security Group)**
+
+En **Network settings**, selecciona la opción **“Create security group”** y configura las siguientes reglas de entrada:
+
+- **SSH** desde `0.0.0.0/0`: permite conectarse por SSH a la instancia desde cualquier dirección IP.  
+  > `0.0.0.0/0` significa “desde cualquier lugar en Internet”.
+
+- **HTTP** desde Internet: permite acceder al servidor web por el puerto 80.
+
+- **HTTPS** desde Internet: permite acceder por el puerto 443 (si se desea acceder al servidor web por este puerto).
+
+![Grupo de seguridad 1](./img/4.png)
