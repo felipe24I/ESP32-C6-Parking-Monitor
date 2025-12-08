@@ -683,6 +683,8 @@ Cada plaza aparece como un recuadro
    - El contador de “Mensajes recibidos” aumenta.
    - Algunas plazas cambian de color/estado (simulación de entrada/salida de vehículos).
    - El círculo global actualiza su color según la cantidad de plazas ocupadas.
+
+![Untitled](./img/ocupadaRojo.png)
  
 ## Diagrama de Flujo del Sistema
 
