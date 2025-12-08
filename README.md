@@ -592,19 +592,16 @@ Navegar a: **Example Configuration** y establecer:
 
 ### 1. Verificar ESP32
 
-**En el monitor serial (`idf.py monitor`) debería ver:**
+**En el monitor serial (`idf.py monitor`) en serial monitor debería ver:**
 ```
-I (15791) PARKING: Publicado mensaje 1, msg_id=21741: {"device_id":"esp32c6_parking_1","msg_id":1,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
-I (18811) LED: Encendiendo LED RGB color: green
-I (18811) PARKING: Publicado mensaje 2, msg_id=13243: {"device_id":"esp32c6_parking_1","msg_id":2,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
-I (21821) LED: Encendiendo LED RGB color: green
-I (21821) PARKING: Publicado mensaje 3, msg_id=45427: {"device_id":"esp32c6_parking_1","msg_id":3,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
-I (24831) PARKING: Plaza 2 ahora está OCUPADA
-I (24831) LED: Encendiendo LED RGB color: blue
-I (24831) PARKING: Publicado mensaje 4, msg_id=2788: {"device_id":"esp32c6_parking_1","msg_id":4,"spots":[{"id":1,"status":"free"},{"id":2,"status":"occupied"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
-I (27841) LED: Encendiendo LED RGB color: blue
-I (27841) PARKING: Publicado mensaje 5, msg_id=32295: {"device_id":"esp32c6_parking_1","msg_id":5,"spots":[{"id":1,"status":"free"},{"id":2,"status":"occupied"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
-I (30851) LED: Encendiendo LED RGB color: blue
+---- Opened the serial port COM12 ----
+I (18161) LED: Encendiendo LED RGB color: green
+I (18161) PARKING: Publicado mensaje 5, msg_id=30740: {"device_id":"esp32c6_parking_1","msg_id":5,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+I (21171) LED: Encendiendo LED RGB color: green
+I (21171) PARKING: Publicado mensaje 6, msg_id=38530: {"device_id":"esp32c6_parking_1","msg_id":6,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+I (24181) LED: Encendiendo LED RGB color: green
+I (24181) PARKING: Publicado mensaje 7, msg_id=62060: {"device_id":"esp32c6_parking_1","msg_id":7,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+
 ```
 
 **debe comprobar:**
@@ -639,20 +636,9 @@ mosquitto_sub -h localhost -t esp32/parking -u esp32 -P esp32
 
 **Debería ver mensajes JSON como::**
 ```
-{"device_id":"esp32c6_parking_1","msg_id":1,
- "spots":[
-   {"id":1,"status":"free"},
-   {"id":2,"status":"occupied"},
-   {"id":3,"status":"free"},
-   {"id":4,"status":"free"}
- ]}
-{"device_id":"esp32c6_parking_1","msg_id":2,
- "spots":[
-   {"id":1,"status":"occupied"},
-   {"id":2,"status":"occupied"},
-   {"id":3,"status":"free"},
-   {"id":4,"status":"occupied"}
- ]}
+{"device_id":"esp32c6_parking_1","msg_id":1,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+{"device_id":"esp32c6_parking_1","msg_id":2,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+{"device_id":"esp32c6_parking_1","msg_id":3,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
 ...
 ```
 
@@ -673,16 +659,16 @@ http://TU_IP_PUBLICA/index.html
 **3.2 En la página debería ver:**
 
 - **Estado MQTT:**
- - Texto "Conectado a MQTT" en color verde.
+   - Texto "Conectado a MQTT" en color verde.
 
 - **Indicador global (círculo):**
- - Verde cuando todas las plazas están libres.
- - Rojo cuando todas están ocupadas.
- - Azul cuando hay ocupación parcial.
+   - Verde cuando todas las plazas están libres.
+   - Rojo cuando todas están ocupadas.
+   - Azul cuando hay ocupación parcial.
 
 - **Resumen numérico:**
- - Plazas ocupadas: X / Y
- - Mensajes recibidos: N (debe ir aumentando).
+   - Plazas ocupadas: X / Y
+   - Mensajes recibidos: N (debe ir aumentando).
 
 - **Tarjetas de plazas:**
 
