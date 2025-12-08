@@ -95,8 +95,6 @@ Este archivo `.pem` será necesario si se va a acceder a la instancia EC2 como c
 
  ![Key-par 3](./img/10.png)
 
-### 1.5 Inicio de la instancia
-
 **1.5 Inicio de la instancia**
 
 Finalmente, después de revisar la configuración anterior, se hace clic en **“Launch instance”** para crear la máquina virtual.  
@@ -111,7 +109,7 @@ Desde el panel de EC2 se verifica que el estado de la instancia cambie a **“ru
 
 Una vez la instancia está en ejecución, ya es posible acceder por **SSH** al servidor y continuar con la configuración del **broker MQTT (Mosquitto)** dentro de esta máquina virtual.
 
-## 2. Configuración del broker MQTT dentro del servidor AWS (EC2)
+## 2. Configuración del broker MQTT y Apache2 dentro del servidor AWS (EC2)
 
 **2.1 Acceso por SSH a la instancia EC2**
 
@@ -282,6 +280,8 @@ Abrir otra terminal y publica un mensaje en el mismo tema:
 ```bash
 
 mosquitto_pub -h localhost -t test -m "Hola, MQTT!" -u esp32 -P esp32
+
+#
 
 ```
 
