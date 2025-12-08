@@ -604,6 +604,8 @@ I (24181) PARKING: Publicado mensaje 7, msg_id=62060: {"device_id":"esp32c6_park
 
 ```
 
+![Untitled](./img/Serial.png)
+
 **debe comprobar:**
 
 El ESP32-C6:
@@ -641,6 +643,8 @@ mosquitto_sub -h localhost -t esp32/parking -u esp32 -P esp32
 {"device_id":"esp32c6_parking_1","msg_id":3,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
 ...
 ```
+
+![Untitled](./img/mosquitto.png)
 
 **Debe comprobar:**
 
