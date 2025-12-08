@@ -519,3 +519,183 @@ sudo nano /var/www/html/index.html
 
 * Ir a ```http://IP_PUBLICA_SERVER/index.html ```
 * Debería mostrar la página con estado "Conectando a MQTT..."
+
+## 4. Configuración del Proyecto ESP32
+
+#### 4.1 Prerequisitos
+
+- **ESP-IDF v5.5** instalado
+- **ESP32-C6-DevKitC-1 v1.2**
+- **Cable USB-C**
+
+#### 4.2 Estructura del Proyecto
+
+El proyecto ya está configurado con los archivos necesarios:
+
+```
+main/
+├── CMakeLists.txt           # Configuración de dependencias
+├── idf_component.yml        # Dependencia led_strip
+├── Kconfig.projbuild        # Configuración del proyecto
+└── station_example_main.c   # Código principal
+```
+
+#### 4.3 Configurar Variables en el Código
+
+Editar `main/station_example_main.c` y cambiar las siguientes líneas:
+
+```c
+// Configuración WiFi - CAMBIAR POR SUS DATOS
+#define EXAMPLE_ESP_WIFI_SSID      "RED_WIFI"
+#define EXAMPLE_ESP_WIFI_PASS      "PASSWORD_WIFI"
+
+// Configuración MQTT - CAMBIAR POR SU IP
+#define MQTT_BROKER_URL "mqtt://_IP_PUBLICA_SERVER:1883"
+```
+
+**IMPORTANTE**: Reemplazar:
+- `RED_WIFI`: Nombre de su red WiFi
+- `PASSWORD_WIFI`: Contraseña de su red WiFi  
+- `IP_PUBLICA_SERVER`: IP pública de su servidor AWS EC2
+
+#### 4.4 Compilar y Flashear
+
+```bash
+# Configurar target para ESP32-C6
+idf.py set-target esp32c6
+
+# Compilar
+idf.py build
+
+# Conectar ESP32 por USB y flashear
+idf.py flash
+
+# Monitor serial para ver logs
+idf.py monitor
+```
+
+#### 4.5 Configuración de Red (opcional)
+
+Si prefiere configurar WiFi mediante menuconfig:
+
+```bash
+idf.py menuconfig
+```
+
+Navegar a: **Example Configuration** y establecer:
+- WiFi SSID
+- WiFi Password
+
+---
+
+##  Verificación del Sistema
+
+### 1. Verificar ESP32
+
+**En el monitor serial (`idf.py monitor`) debería ver:**
+```
+I (15791) PARKING: Publicado mensaje 1, msg_id=21741: {"device_id":"esp32c6_parking_1","msg_id":1,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+I (18811) LED: Encendiendo LED RGB color: green
+I (18811) PARKING: Publicado mensaje 2, msg_id=13243: {"device_id":"esp32c6_parking_1","msg_id":2,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+I (21821) LED: Encendiendo LED RGB color: green
+I (21821) PARKING: Publicado mensaje 3, msg_id=45427: {"device_id":"esp32c6_parking_1","msg_id":3,"spots":[{"id":1,"status":"free"},{"id":2,"status":"free"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+I (24831) PARKING: Plaza 2 ahora está OCUPADA
+I (24831) LED: Encendiendo LED RGB color: blue
+I (24831) PARKING: Publicado mensaje 4, msg_id=2788: {"device_id":"esp32c6_parking_1","msg_id":4,"spots":[{"id":1,"status":"free"},{"id":2,"status":"occupied"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+I (27841) LED: Encendiendo LED RGB color: blue
+I (27841) PARKING: Publicado mensaje 5, msg_id=32295: {"device_id":"esp32c6_parking_1","msg_id":5,"spots":[{"id":1,"status":"free"},{"id":2,"status":"occupied"},{"id":3,"status":"free"},{"id":4,"status":"free"}]}
+I (30851) LED: Encendiendo LED RGB color: blue
+```
+
+**debe comprobar:**
+
+El ESP32-C6:
+
+-Se conecta correctamente al WiFi (SSID y IP obtenida).
+-Se conecta al broker MQTT sin errores.
+
+Cada ~3 segundos:
+
+- Se simula algún cambio en las plazas (Plaza X ahora está OCUPADA/LIBRE).
+- Se publica un JSON en el topic esp32/parking con el estado de todas las plazas.
+
+**LED RGB físico debe:**
+
+El LED actúa como indicador global del parqueadero:
+
+- Verde → Todas las plazas libres.
+- Rojo → Parqueadero lleno (todas ocupadas).
+- Azul → Ocupación parcial (unas libres y otras ocupadas).
+
+
+### 2. Verificar Servidor MQTT (Mosquitto en AWS)
+
+En el servidor AWS (donde corre Mosquitto), suscríbetase al topic del parqueadero:
+
+```bash
+# En el servidor AWS, monitorear mensajes en tiempo real del parqueadero
+mosquitto_sub -h localhost -t esp32/parking -u esp32 -P esp32
+```
+
+**Debería ver mensajes JSON como::**
+```
+{"device_id":"esp32c6_parking_1","msg_id":1,
+ "spots":[
+   {"id":1,"status":"free"},
+   {"id":2,"status":"occupied"},
+   {"id":3,"status":"free"},
+   {"id":4,"status":"free"}
+ ]}
+{"device_id":"esp32c6_parking_1","msg_id":2,
+ "spots":[
+   {"id":1,"status":"occupied"},
+   {"id":2,"status":"occupied"},
+   {"id":3,"status":"free"},
+   {"id":4,"status":"occupied"}
+ ]}
+...
+```
+
+**Debe comprobar:**
+
+- Llegan mensajes cada ~3 segundos.
+- El campo msg_id va incrementando.
+- Los estados status cambian entre "free" y "occupied" de forma coherente.
+
+### 3. Verificar Página Web (Gemelo Digital de Parqueadero)
+
+**3.1 Abrir en el navegador:**
+
+```
+http://TU_IP_PUBLICA/index.html
+```
+
+**3.2 En la página debería ver:**
+
+- **Estado MQTT:**
+ - Texto "Conectado a MQTT" en color verde.
+
+- **Indicador global (círculo):**
+ - Verde cuando todas las plazas están libres.
+ - Rojo cuando todas están ocupadas.
+ - Azul cuando hay ocupación parcial.
+
+- **Resumen numérico:**
+ - Plazas ocupadas: X / Y
+ - Mensajes recibidos: N (debe ir aumentando).
+
+- **Tarjetas de plazas:**
+
+Cada plaza aparece como un recuadro
+
+ - Verde y texto LIBRE cuando status = "free"
+ - Rojo y texto OCUPADA cuando status = "occupied".
+
+### **Comportamiento esperado:**
+
+- Cada vez que el ESP32-C6 publica un nuevo JSON:
+   - El contador de “Mensajes recibidos” aumenta.
+   - Algunas plazas cambian de color/estado (simulación de entrada/salida de vehículos).
+   - El círculo global actualiza su color según la cantidad de plazas ocupadas.
+
+
