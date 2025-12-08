@@ -683,5 +683,46 @@ Cada plaza aparece como un recuadro
    - El contador de “Mensajes recibidos” aumenta.
    - Algunas plazas cambian de color/estado (simulación de entrada/salida de vehículos).
    - El círculo global actualiza su color según la cantidad de plazas ocupadas.
+ 
+## Diagrama de Flujo del Sistema
+
+```
+Inicio
+  ↓
+Inicializar NVS
+  ↓
+Conectar WiFi
+  ↓
+Inicializar LED RGB (indicador global del parqueadero)
+  ↓
+Conectar MQTT
+  ↓
+Crear Tarea de Parqueadero
+  ↓
+Loop infinito (tarea de parqueadero):
+├─ Simular estado de las plazas (libre/ocupado)
+├─ Actualizar LED RGB según ocupación:
+│ - Verde → todas libres
+│ - Rojo → todas ocupadas
+│ - Azul → ocupación parcial
+├─ Construir mensaje JSON con:
+│ - device_id
+│ - msg_id (contador de mensajes)
+│ - listado de plazas: id + status (free/occupied)
+├─ Publicar JSON por MQTT en el topic esp32/parking
+├─ Esperar 3 segundos
+└─ Repetir ciclo
+```
+
+---
+
+### Servidor
+- **Cloud Provider**: AWS EC2
+- **OS**: Ubuntu 22.04 LTS
+- **Broker MQTT**: Mosquitto
+- **Web Server**: Apache2
+- **Puertos**: 22 (SSH), 80 (HTTP), 1883 (MQTT), 9001 (WebSocket)
+
+---
 
 
