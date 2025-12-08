@@ -684,7 +684,14 @@ Cada plaza aparece como un recuadro
    - Algunas plazas cambian de color/estado (simulación de entrada/salida de vehículos).
    - El círculo global actualiza su color según la cantidad de plazas ocupadas.
 
+### **Ejemplo de evento de 4 plazas ocupadas**
 ![Untitled](./img/ocupadaRojo.png)
+
+### **Ejemplo de evento 3 plazas libres y 1 ocupada**
+![Untitled](./img/parcialAzul.png)
+
+### **Ejemplo de evento 4 plazas libres**
+![Untitled](./img/LibreVerde.png)
  
 ## Diagrama de Flujo del Sistema
 
