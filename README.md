@@ -210,18 +210,12 @@ Y se agrega el siguiente contenido básico:
 ```bash
 
 # Listener MQTT normal (ESP32-C6)
-
 listener 1883
-
 protocol mqtt
 
-
 # Listener MQTT sobre WebSocket (dashboard web)
-
 listener 9001
-
 protocol websockets
-
 
 ```
 
@@ -287,3 +281,241 @@ mosquitto_pub -h localhost -t test -m "Hola, MQTT!" -u esp32 -P esp32
 
 Deberías ver el mensaje "Hola, MQTT!" en la terminal donde te suscribiste al tema.
 
+## 3. Creación del dashboard web
+
+Por convención, las páginas web se almacenan en el directorio **/var/www/hmtl**. se puede utilizar este directorio para una página web sencilla. Lo mejor es crear un directorio para el sitio y cambiar los permisos para que se pueda editar los archivos:
+
+```bash
+sudo mkdir /var/www/html/
+sudo chown -R tu_usuario:tu_usuario /var/www/html/
+```
+
+Reemplaza **`tu_usuario`** con su nombre de usuario.
+
+
+![sitio](./img/17.png)
+
+Para  la aplicacion a desarrollar  se debe colocar este  codigo HTML de la parte web para  vizualizacion  de la informacion, este se coloca en la siguiente ruta:
+
+```bash
+
+sudo nano /var/www/html/index.html
+
+```
+
+**Contenido del archivo:**
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Monitor de Parqueadero IoT</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    #circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #222;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 0 20px #888;
+      transition: background 0.5s;
+    }
+
+    #status {
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    .connected { color: green; }
+    .disconnected { color: red; }
+    .connecting { color: orange; }
+
+    #summary {
+      margin: 15px 0;
+    }
+
+    #parkingContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .spot {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .spot.free {
+      background-color: #8cff8c; /* verde claro */
+    }
+
+    .spot.occupied {
+      background-color: #ff7b7b; /* rojo claro */
+    }
+
+    .spot span {
+      font-size: 12px;
+      font-weight: normal;
+    }
+  </style>
+</head>
+<body>
+  <h2>Monitor de Parqueadero IoT - ESP32-C6</h2>
+
+  <!-- Indicador global tipo semáforo -->
+  <div id="circle"></div>
+
+  <div id="status" class="connecting">Conectando a MQTT...</div>
+
+  <div id="summary">
+    Estado global: <span id="globalState">---</span><br>
+    Plazas ocupadas: <span id="occupiedCount">0</span> /
+    <span id="totalSpots">0</span><br>
+    Mensajes recibidos: <span id="messageCount">0</span>
+  </div>
+
+  <!-- Contenedor de las plazas -->
+  <div id="parkingContainer"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+  <script>
+    window.onload = function() {
+      const brokerHost = "IP_PUBLICA_SERVER"; // CAMBIAR  LA IP
+      const brokerPort = 9001;           // Puerto WebSocket
+      const topic = "esp32/parking";     // 🔹 NUEVO TOPIC
+      const username = "esp32"; //COLOCAR TU USUARIO PARA ACCESO MQTT
+      const password = "esp32"; //COLOCAR TU CONTRASEÑA PARA ACCESO MQTT
+
+      // Colores del círculo global
+      const globalColorMap = {
+        free:  "#00ff00", // todo libre
+        full:  "#ff0000", // todo ocupado
+        mixed: "#0000ff"  // parcialmente ocupado
+      };
+
+      let messageCount = 0;
+
+      // Crear cliente MQTT de Paho
+      let client = new Paho.MQTT.Client(
+        brokerHost,
+        brokerPort,
+        "webclient_" + Math.random().toString(16).substr(2, 8)
+      );
+
+      client.onConnectionLost = function(responseObject) {
+        console.log("Conexión perdida: " + responseObject.errorMessage);
+        document.getElementById('status').textContent = "Desconectado de MQTT";
+        document.getElementById('status').className = "disconnected";
+      };
+
+      client.onMessageArrived = function(message) {
+        console.log("Mensaje recibido: " + message.payloadString);
+
+        // Incrementamos contador de mensajes
+        messageCount++;
+        document.getElementById('messageCount').textContent = messageCount;
+
+        let data;
+        try {
+          data = JSON.parse(message.payloadString);
+        } catch (e) {
+          console.error("Error al parsear JSON:", e);
+          return;
+        }
+
+        const spots = data.spots || [];
+        const totalSpots = spots.length;
+        document.getElementById('totalSpots').textContent = totalSpots;
+
+        // Limpiar contenedor
+        const container = document.getElementById('parkingContainer');
+        container.innerHTML = "";
+
+        // Contar ocupadas y dibujar cada plaza
+        let occupiedCount = 0;
+        spots.forEach(spot => {
+          const div = document.createElement("div");
+          div.className = "spot " + (spot.status === "occupied" ? "occupied" : "free");
+
+          if (spot.status === "occupied") occupiedCount++;
+
+          div.innerHTML = `
+            P${spot.id}<br>
+            <span>${spot.status === "occupied" ? "OCUPADA" : "LIBRE"}</span>
+          `;
+
+          container.appendChild(div);
+        });
+
+        document.getElementById('occupiedCount').textContent = occupiedCount;
+
+        // Actualizar estado global y círculo según ocupación
+        let globalStateText = "---";
+        let circleColor = "#222";
+
+        if (totalSpots > 0) {
+          if (occupiedCount === 0) {
+            globalStateText = "TODO LIBRE";
+            circleColor = globalColorMap.free;
+          } else if (occupiedCount === totalSpots) {
+            globalStateText = "PARQUEADERO LLENO";
+            circleColor = globalColorMap.full;
+          } else {
+            globalStateText = "OCUPACIÓN PARCIAL";
+            circleColor = globalColorMap.mixed;
+          }
+        }
+
+        document.getElementById('globalState').textContent = globalStateText;
+        document.getElementById('circle').style.background = circleColor;
+      };
+
+      const connectOptions = {
+        userName: username,
+        password: password,
+        timeout: 10,
+        keepAliveInterval: 30,
+        onSuccess: function() {
+          console.log("Conectado exitosamente a MQTT broker");
+          document.getElementById('status').textContent = "Conectado a MQTT";
+          document.getElementById('status').className = "connected";
+          client.subscribe(topic);
+          console.log("Suscrito al topic: " + topic);
+        },
+        onFailure: function(error) {
+          console.log("Error de conexión: " + error.errorMessage);
+          document.getElementById('status').textContent =
+            "Falló la conexión MQTT: " + error.errorMessage;
+          document.getElementById('status').className = "disconnected";
+        }
+      };
+
+      console.log("Intentando conectar a: " + brokerHost + ":" + brokerPort);
+      client.connect(connectOptions);
+    };
+  </script>
+</body>
+</html>
+```
+
+![Untitled](./img/27.png)
+
+* Ir a ```http://IP_PUBLICA_SERVER/index.html ```
+* Debería mostrar la página con estado "Conectando a MQTT..."
