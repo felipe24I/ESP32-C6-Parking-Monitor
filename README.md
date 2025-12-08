@@ -138,7 +138,152 @@ De esta forma, se establece la conexión SSH con el servidor Ubuntu que está co
 
 ![ip-public](./img/16.png)
 
+**2.2 Instalación de apache2**
+
+```bash
+sudo apt update
+sudo apt install apache2
+```
+
+Se debe asegúrar de que Apache esté en ejecución. Puede verificar su estado con el siguiente comando:
+
+```bash
+
+sudo systemctl status apache2
+
+```
+
+![Untitled](./img/18.png)
+
+Si Apache no se está ejecutando, se debe iniciar el servicio con:
+
+```bash
+
+sudo systemctl start apache2
+
+```
+
+**2.3 Instalación de Mosquitto**
+
+Los siguientes comandos actualizarán la lista de paquetes disponibles y luego instalarán el servidor Mosquitto y la utilidad de línea de comandos Mosquitto Clients.
+
+```bash
+
+sudo apt update
+sudo apt install mosquitto mosquitto-clients
+
+```
+Una vez que Mosquitto esté instalado, se puede habilitar el servicio y se debe de asegurar de que se inicie automáticamente al arrancar el sistema con los siguientes comandos:
+
+```bash
+
+sudo systemctl enable mosquitto
+sudo systemctl start mosquitto
+
+```
+
+Para verificar si Mosquitto se está ejecutando correctamente ejecutando el siguiente comando:
+
+```bash
+
+sudo systemctl status mosquitto
+
+```
+
+Se deberia ver un mensaje que indique que el servicio está activo y en funcionamiento.
+
+![Untitled](./img/22.png)
+
+**2.4 Configuración de los puertos 1883 y 9001 (WebSocket)**
+
+Por defecto, Mosquitto suele escuchar en el puerto 1883 (MQTT sobre TCP).
+Para esta práctica también se configurará el puerto 9001 para MQTT sobre WebSocket, que usará el dashboard web.
+
+Primero, se edita el archivo de configuración (por ejemplo):
+
+```bash
+
+sudo nano /etc/mosquitto/conf.d/mosquitto.conf
+
+```
+
+Y se agrega el siguiente contenido básico:
+
+```bash
+
+# Listener MQTT normal (ESP32-C6)
+
+listener 1883
+
+protocol mqtt
 
 
+# Listener MQTT sobre WebSocket (dashboard web)
 
+listener 9001
+
+protocol websockets
+
+
+```
+
+Se guarda el archivo (Ctrl + O, Enter) y se sale del editor (Ctrl + X).
+
+**2.5 Crear un archivo de contraseñas:**
+
+- Abrir una terminal y ejecuta el siguiente comando para crear un archivo que almacene los usuarios y contraseñas:
+
+```bash
+
+sudo mosquitto_passwd -c /etc/mosquitto/passwd <nombre-de-usuario>
+
+```
+
+Reemplazar **`<nombre-de-usuario>`** con el nombre de usuario que  se desee. Será solicitado a ingresar una contraseña para ese usuario.
+
+![Untitled](./img/24.png)
+
+```bash
+sudo chown mosquitto:mosquitto /etc/mosquitto/passwd
+sudo chmod 640 /etc/mosquitto/passwdclear
+```
+
+**2.6 Reiniciar el servidor Mosquitto para que los cambios surtan efecto:**
+
+Finalmente, se reinicia Mosquitto para que tome la nueva configuración:
+
+```bash
+
+sudo systemctl restart mosquitto
+
+```
+
+Ahora, cuando te conectes al servidor MQTT Mosquitto, deberás proporcionar un nombre de usuario y contraseña válidos para autenticarte.
+
+En este punto, el servidor AWS EC2 ya tiene un broker MQTT escuchando en:
+
+- 1883/TCP para el ESP32-C6.
+
+- 9001/TCP (WebSocket) para el dashboard web.
+
+**2.7 Prueba el Servidor**
+
+Puedes utilizar el cliente Mosquitto para probar la funcionalidad del servidor MQTT. Abre una terminal y utiliza el siguiente comando para suscribirte a un tema y ver los mensajes que llegan:
+
+```bash
+
+mosquitto_sub -h localhost -t test -u esp32 -P esp32
+musqu
+
+```
+
+Abrir otra terminal y publica un mensaje en el mismo tema:
+
+```bash
+
+mosquitto_pub -h localhost -t test -m "Hola, MQTT!" -u esp32 -P esp32
+
+```
+
+Deberías ver el mensaje "Hola, MQTT!" en la terminal donde te suscribiste al tema.
 
